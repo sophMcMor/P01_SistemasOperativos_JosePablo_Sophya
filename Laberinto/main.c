@@ -1,15 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-//Archivo principal
+// Variables necesarias
+//Matriz que representa al laberinto (puntero a un array porque no sabemos dimensiones)
+int *array[]
+//Cada fila es una l√≠nea del TXT
+//Cada campo de la fila representa una celda 
+//CAMPO: Fila con el char, y direcciones a las que fue recorrido
+// [   [ ['1','izq','der','arr','abj'],['*','izq','der','arr','abj']],
+//     [ ['1','izq','der','arr','abj'],['*','izq','der','arr','abj']],
+//     [ ['1','izq','der','arr','abj'],['*','izq','der','arr','abj']]
+// ]
+
+//Cantidad de filas de la matriz 
+int filasLab;
+//Cantidad de columnas de la matriz
+int columnasLab;
 
 void leerArchivo(const char *nombreArchivo) {
-    int filas;
-    int columnas;
     FILE *archivo;
-    char caracter;
     char linea[100];
-    int laberintoInicial[2][2] ;
 
     archivo = fopen(nombreArchivo, "r");
 
@@ -18,26 +29,31 @@ void leerArchivo(const char *nombreArchivo) {
         return;
     }
 
-    // printf("Contenido del archivo %s:\n", nombreArchivo);
-
-    // Lee lÌnea por lÌnea desde el archivo
-    while (fgets(linea, 100, archivo) != NULL) {
-        // Imprime la lÌnea
-        printf("%s", linea);
-
-        // Detecta el salto de lÌnea
-        if (linea[strlen(linea) - 1] == '\n') {
-            printf("Se encontrÛ un salto de lÌnea.\n");
+    // Obtener las dimensiones del laberinto (Est√°n en la primera l√≠nea del archivo)
+    if (fgets(linea, sizeof(linea), archivo) != NULL) {
+        // Analiza los n√∫meros de la primera l√≠nea
+        if (sscanf(linea, "%d %d", &filasLab, &columnasLab) != 2) {
+            printf("Error al obtener las dimensiones del laberinto.\n");
+            fclose(archivo);
+            return;
+        }
+        else{
+            printf("Dimensiones del laberinto: filas=%d, columnas=%d\n", filasLab, columnasLab);
         }
     }
+    
+    // Leer y procesar el resto del archivo l√≠nea por l√≠nea
+    // while (fgets(linea, sizeof(linea), archivo) != NULL) {
+    //     Procesa la l√≠nea como desees aqu√≠
+    //     Por ejemplo, imprime cada l√≠nea
+    //     printf("%s", linea);
+    // }
 
     fclose(archivo);
 }
 
-int main()
-{
-    printf("Hello world!\n");
-    const char *nombreArchivo = "C:/Users/Harrick Mc Lean M/Desktop/I Semestre 2024/Operativos/P01_SistemasOperativos_JosePablo_Sophya/Ejemplos laberintos/lab1.txt";
+int main() {
+    const char *nombreArchivo = "/home/sophy/Desktop/P01_SistemasOperativos_JosePablo_Sophya-Sophy/Ejemplos laberintos/lab1.txt";
     leerArchivo(nombreArchivo);
     return 0;
-}
+};
