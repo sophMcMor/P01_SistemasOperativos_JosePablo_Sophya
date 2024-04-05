@@ -3,15 +3,13 @@
 #include <string.h>
 #include <celda.h> //Estructura creada
 
-// Variables necesarias
-//Matriz que representa al laberinto (puntero a un array porque no sabemos dimensiones)
-Celda **laberinto;
-//Cada fila es una línea del TXT
+// EXPLICACIÓN FORMATO LABERINTO
+//Cada fila del lab es una línea del TXT
 //Cada campo de la fila representa una celda 
-//CAMPO: Fila con el char, y direcciones a las que fue recorrido
-// [   [ ['1','izq','der','arr','abj'],['*','izq','der','arr','abj']],
-//     [ ['1','izq','der','arr','abj'],['*','izq','der','arr','abj']],
-//     [ ['1','izq','der','arr','abj'],['*','izq','der','arr','abj']]
+//CELDA: Objeto que tiene char y posiciones
+// [   [ CELDA: '1','izq','der','arr','abj', CELDA:'*','izq','der','arr','abj'],
+//     [ CELDA: '1','izq','der','arr','abj', CELDA:'*','izq','der','arr','abj'],
+//    [ CELDA: '1','izq','der','arr','abj', CELDA:'*','izq','der','arr','abj']
 // ]
 
 //Cantidad de filas de la matriz 

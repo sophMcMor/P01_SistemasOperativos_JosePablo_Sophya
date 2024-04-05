@@ -2,7 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include "celda.h" // Asegúrate de incluir la definición de Celda
+// EXPLICACIÓN FORMATO LABERINTO
+//Cada fila del lab es una línea del TXT
+//Cada campo de la fila representa una celda 
+//CELDA: Objeto que tiene char y posiciones
+// [   [ CELDA: '1','izq','der','arr','abj', CELDA:'*','izq','der','arr','abj'],
+//     [ CELDA: '1','izq','der','arr','abj', CELDA:'*','izq','der','arr','abj'],
+//    [ CELDA: '1','izq','der','arr','abj', CELDA:'*','izq','der','arr','abj']
+// ]
 
+void imprimirLaberinto(Celda laberinto){
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                printf("%d ", laberinto[i][j].valor);
+            }
+            printf("\n");
+        }
+}
 int main() {
     const char *nombreArchivo = "/home/sophy/Desktop/P01_SistemasOperativos_JosePablo_Sophya-Sophy/Ejemplos laberintos/lab1.txt"; // Nombre del archivo
     FILE *archivo;
@@ -89,6 +105,14 @@ int main() {
 
     // Cierra el archivo
     fclose(archivo);
+
+    printf("PRUEBA PARA IMPRIMIR EL LABERINTO GUARDADO EN ARRAY");
+    for (int i = 0; i < filasLab; i++) {
+        for (int j = 0; j < columnasLab; j++) {
+            printf("%d ", laberinto[i][j].valor);
+        }
+        printf("\n");
+    }
 
 
     return 0;
