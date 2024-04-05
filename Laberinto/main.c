@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <celda.h>
 
 // Variables necesarias
 //Matriz que representa al laberinto (puntero a un array porque no sabemos dimensiones)
-int *array[]
+int **Celda[]
 //Cada fila es una línea del TXT
 //Cada campo de la fila representa una celda 
 //CAMPO: Fila con el char, y direcciones a las que fue recorrido
