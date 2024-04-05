@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <celda.h>
+#include <celda.h> //Estructura creada
 
 // Variables necesarias
 //Matriz que representa al laberinto (puntero a un array porque no sabemos dimensiones)
-int **Celda[]
+Celda **laberinto;
 //Cada fila es una línea del TXT
 //Cada campo de la fila representa una celda 
 //CAMPO: Fila con el char, y direcciones a las que fue recorrido
@@ -30,7 +30,7 @@ void leerArchivo(const char *nombreArchivo) {
         return;
     }
 
-    // Obtener las dimensiones del laberinto (Están en la primera línea del archivo)
+    // Obtener las DIMENSIONES del laberinto (Están en la primera línea del archivo)
     if (fgets(linea, sizeof(linea), archivo) != NULL) {
         // Analiza los números de la primera línea
         if (sscanf(linea, "%d %d", &filasLab, &columnasLab) != 2) {
@@ -42,6 +42,15 @@ void leerArchivo(const char *nombreArchivo) {
             printf("Dimensiones del laberinto: filas=%d, columnas=%d\n", filasLab, columnasLab);
         }
     }
+
+    //Procesar cada línea y crear una CELDA para cada char
+    Celda celda1;         // Crear una instancia de Celda
+    celda1.caracter = '1';  // Asignar un valor al campo caracter
+    celda1.izquierda = 0;  // Asignar un valor al campo izquierda
+    celda1.derecha = 0;    // Asignar un valor al campo derecha
+    celda1.arriba = 0;     // Asignar un valor al campo arriba
+    celda1.abajo = 0;      // Asignar un valor al campo abajo
+
     
     // Leer y procesar el resto del archivo línea por línea
     // while (fgets(linea, sizeof(linea), archivo) != NULL) {
