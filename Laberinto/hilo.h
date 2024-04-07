@@ -7,6 +7,8 @@
 typedef struct {
     int celdasRecorridas;
     char direccion;
+    int posFila;
+    int posColumna;
 } AtributosHilo;
 
 // Prototipo de la rutina del hilo
