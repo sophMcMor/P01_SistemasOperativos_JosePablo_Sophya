@@ -11,6 +11,16 @@
 #define MAX_COLUMNAS 100
 
 typedef struct {
+    Celda *laberinto;
+    char direccion;
+    int posFila;
+    int posColumna;
+    int celdasRecorridas;
+    int filasLab;
+    int columnasLab;
+} Args;
+
+typedef struct {
     int celdasRecorridas;
     char direccion;
     int posFila;
@@ -50,59 +60,95 @@ void movimientoHilo(AtributosHilo *hilo){
     }
 }
 
-int recorrerCelda(Celda laberinto[100][100], AtributosHilo *hilo){
+int recorrerCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo){
     int termina = 0;
-    printf("POSX:%d, POSY:%d, CARACTER:%c\n",hilo->posFila, hilo->posColumna, laberinto[hilo->posFila][hilo->posColumna].caracter);
     switch (laberinto[hilo->posFila][hilo->posColumna].caracter)
     {
     case '1':
-        printf("ENTRO1\n");
         laberinto[hilo->posFila][hilo->posColumna].caracter = 'R';
+        hilo->celdasRecorridas++;
         break;
     
     case '/':
-        printf("ENTRO2\n");
         laberinto[hilo->posFila][hilo->posColumna].caracter = 'S';
-        return 1;
+        hilo->celdasRecorridas++;
+        return 2;
 
     case '*':
-        printf("ENTRO3\n");
         return 1;
 
     default:
-        printf("ENTRO4\n");
         break;
     }
     movimientoHilo(hilo);
-    printf("POSX:%d, POSY:%d, CARACTER:%c\n",hilo->posFila, hilo->posColumna, laberinto[hilo->posFila][hilo->posColumna].caracter);
     return 0;
+}
+
+void *rutinaHilo(void *arg);
+
+void analizarCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo){
+    int fila = hilo->posFila;
+    int col = hilo->posColumna;
+    int celdas = hilo->celdasRecorridas;
+    //printf("%d",hilo->celdasRecorridas);
+    // Analiza arriba de la celda
+    if (hilo->direccion != 'A' && fila - 1 >= 0 && laberinto[fila - 1][col].caracter == '1'){
+        pthread_t hilo;
+        Args misArgs = {laberinto, 'A', fila, col, celdas, 10, 10};
+        pthread_create(&hilo, NULL, rutinaHilo, (void *) &misArgs);
+        pthread_join(hilo, NULL);
+    }
+    // Analiza abajo de la celda
+    if (hilo->direccion != 'a' && fila + 1 < 10 && laberinto[fila + 1][col].caracter == '1'){
+        pthread_t hilo;
+        Args misArgs = {laberinto, 'a', fila, col, celdas, 10, 10};
+        pthread_create(&hilo, NULL, rutinaHilo, (void *) &misArgs);
+        pthread_join(hilo, NULL);
+    }
+    // Analiza a la izquierda de la celda
+    if (hilo->direccion != 'i' && col - 1 >= 0 && laberinto[fila][col - 1].caracter == '1'){
+        pthread_t hilo;
+        Args misArgs = {laberinto, 'i', fila, col, celdas, 10, 10};
+        pthread_create(&hilo, NULL, rutinaHilo, (void *) &misArgs);
+        pthread_join(hilo, NULL);
+    }
+    // Analiza a la derecha de la celda
+    if (hilo->direccion != 'd' && col + 1 < 10 && laberinto[fila][col + 1].caracter == '1'){
+        pthread_t hilo;
+        Args misArgs = {laberinto, 'd', fila, col, celdas, 10, 10};
+        pthread_create(&hilo, NULL, rutinaHilo, (void *) &misArgs);
+        pthread_join(hilo, NULL);
+    }
 }
 
 // Implementación de la rutina del hilo
 void *rutinaHilo(void *arg) {
-    Celda (*laberinto)[100] = (Celda (*)[100])arg;
+    Args * args = (Args *)arg;
     
-    printf("Laberinto2:\n");
-    imprimirLaberinto(laberinto, 10, 10);
+    printf("Entra:\n");
+    imprimirLaberinto(args->laberinto, args->filasLab, args->columnasLab);
+    
     AtributosHilo nuevoHilo;
     AtributosHilo *ptrHilo = &nuevoHilo;
-    ptrHilo->direccion = 'a';
-    ptrHilo->posFila = 0;
-    ptrHilo->posColumna = 0;
-    ptrHilo->celdasRecorridas = 0;
+    ptrHilo->direccion = args->direccion;
+    ptrHilo->posFila = args->posFila;
+    ptrHilo->posColumna = args->posColumna;
+    ptrHilo->celdasRecorridas = args->celdasRecorridas;
 
     int termina;
     while (0==0){
-        termina = recorrerCelda(laberinto, &nuevoHilo);
-        if (termina)
+        analizarCelda(args->laberinto, ptrHilo);
+        termina = recorrerCelda(args->laberinto, &nuevoHilo);
+        if (termina == 2){
+            printf("HILO TERMINADO\nCantidad de Celdas Recorridas: %d\nEl hilo salio exitosamente",ptrHilo->celdasRecorridas);
             return 0;
-        sleep(2);
-        system("cls");
-        imprimirLaberinto(laberinto, 10, 10);
+        }
+        sleep(5);
+        system("clear");
+        imprimirLaberinto(args->laberinto, args->filasLab, args->columnasLab);
     }
     
 }
-
 
 int main() {
     const char *nombreArchivo = "../Ejemplos laberintos/lab1.txt";
@@ -159,28 +205,19 @@ int main() {
     printf("Laberinto:\n");
     imprimirLaberinto(laberinto, filasLab, columnasLab);
 
-
     int pos[2] = {0,0};
 
     pthread_t hilo;
-
-    pthread_create(&hilo, NULL, rutinaHilo, (void *) &laberinto);
+    char direccion = 'a';
+    int atributos[3] = {0,0,0};
+    int dimensiones[2] = {filasLab, columnasLab};
+    //int *ptrAtributos = 
+    
+    Args misArgs = {laberinto, direccion, 0, 0, 0, filasLab, columnasLab};
+    //printf("Laberinto Prueba:\n");
+    //imprimirLaberinto(misArgs.laberinto, filasLab, columnasLab);
+    pthread_create(&hilo, NULL, rutinaHilo, (void *) &misArgs);
     pthread_join(hilo, NULL);
-    // while (0==0){
-    //     Hilo nuevoHilo;
-    //     nuevoHilo.direccion = 'a';
-    //     nuevoHilo.posFila = pos[0];
-    //     nuevoHilo.posColumna = pos[1];
-    //     nuevoHilo.celdasRecorridas = 0;
-
-    //     sleep(2);
-    //     system("clear");
-    //     salio = movimientoHilo(laberinto, filasLab, columnasLab, nuevoHilo);
-    //     imprimirLaberinto(laberinto, filasLab, columnasLab);
-
-    //     if (salio)
-    //         break;
-    //}
 
     return 0;
 }
