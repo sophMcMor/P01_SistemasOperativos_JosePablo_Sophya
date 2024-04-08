@@ -64,6 +64,8 @@ void movimientoHilo(AtributosHilo *hilo){
     }
 }
 
+//void generarHilo()
+
 // Analiza la celda actual y realiza la accion correspondiente
 int recorrerCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo){
     int termina = 0; // Guarda 3 posibles estados del hilo: no termina (0), termina (1), sale (2)
@@ -85,11 +87,17 @@ int recorrerCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo)
     case '*':
         return 1;
 
+    // Si el caracter es R, retorna el estado de terminar hilo
+    case 'R':
+        return 1;
+
     default:
-        printf("Valor no valido \n");
+        printf("Valor no valido\n");
         break;
     }
-    // SI llega aqui, el hilo puede seguir avanzando
+    // Si llega aqui, el hilo puede seguir avanzando
+    // Analiza la celda
+    analizarCelda(laberinto, hilo);
     movimientoHilo(hilo);
     return 0;
 }
@@ -105,28 +113,28 @@ void analizarCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo
     // Analiza arriba de la celda
     if (hilo->direccion != 'A' && fila - 1 >= 0 && laberinto[fila - 1][col].caracter == '1'){
         pthread_t nuevoHiloArr;
-        Args misArgs = {laberinto, 'A', fila, col, celdas, 10, 10};
+        Args misArgs = {laberinto, 'A', fila - 1, col, celdas, 10, 10};
         pthread_create(&nuevoHiloArr, NULL, rutinaHilo, (void *) &misArgs);
         pthread_join(nuevoHiloArr, NULL);
     }
     // Analiza abajo de la celda
     if (hilo->direccion != 'a' && fila + 1 < 10 && laberinto[fila + 1][col].caracter == '1'){
         pthread_t nuevoHiloAba;
-        Args misArgs = {laberinto, 'a', fila, col, celdas, 10, 10};
+        Args misArgs = {laberinto, 'a', fila + 1, col, celdas, 10, 10};
         pthread_create(&nuevoHiloAba, NULL, rutinaHilo, (void *) &misArgs);
         pthread_join(nuevoHiloAba, NULL);
     }
     // Analiza a la izquierda de la celda
     if (hilo->direccion != 'i' && col - 1 >= 0 && laberinto[fila][col - 1].caracter == '1'){
         pthread_t nuevoHiloIzq;
-        Args misArgs = {laberinto, 'i', fila, col, celdas, 10, 10};
+        Args misArgs = {laberinto, 'i', fila, col - 1, celdas, 10, 10};
         pthread_create(&nuevoHiloIzq, NULL, rutinaHilo, (void *) &misArgs);
         pthread_join(nuevoHiloIzq, NULL);
     }
     // Analiza a la derecha de la celda
     if (hilo->direccion != 'd' && col + 1 < 10 && laberinto[fila][col + 1].caracter == '1'){
         pthread_t nuevoHiloDer;
-        Args misArgs = {laberinto, 'd', fila, col, celdas, 10, 10};
+        Args misArgs = {laberinto, 'd', fila, col + 1, celdas, 10, 10};
         pthread_create(&nuevoHiloDer, NULL, rutinaHilo, (void *) &misArgs);
         pthread_join(nuevoHiloDer, NULL);
     }
@@ -148,22 +156,19 @@ void *rutinaHilo(void *arg) {
     ptrHilo->posColumna = args->posColumna;
     ptrHilo->celdasRecorridas = args->celdasRecorridas;
 
-
     int termina;
     while (0==0){
-        // Analiza la celda
-        analizarCelda(args->laberinto, ptrHilo);
         // Realiza lo correspondiente en la celda y ve si el hilo debe terminar
         termina = recorrerCelda(args->laberinto, &nuevoHilo);
         if (termina == 2){ // El hilo salio
-            printf("HILO TERMINADO\nCantidad de Celdas Recorridas: %d\nEl hilo salio exitosamente",ptrHilo->celdasRecorridas);
+            printf("HILO TERMINADO\nCantidad de Celdas Recorridas: %d\nEl hilo salio exitosamente\n",ptrHilo->celdasRecorridas);
             return 0;
         }
         else if (termina == 1){ // El hilo choco con pared
-            printf("HILO TERMINADO\nCantidad de Celdas Recorridas: %d\nEl hilo no salio",ptrHilo->celdasRecorridas);
+            printf("HILO TERMINADO\nCantidad de Celdas Recorridas: %d\nEl hilo no salio\n",ptrHilo->celdasRecorridas);
             return 0;
         }
-        sleep(5);
+        sleep(2);
         system("clear");
         imprimirLaberinto(args->laberinto, args->filasLab, args->columnasLab);
     }
@@ -229,10 +234,6 @@ int main() {
 
     pthread_t hilo;
     char direccion = 'a';
-    int atributos[3] = {0,0,0};
-    int dimensiones[2] = {filasLab, columnasLab};
-    //int *ptrAtributos = 
-    
     Args misArgs = {laberinto, direccion, 0, 0, 0, filasLab, columnasLab};
     //printf("Laberinto Prueba:\n");
     //imprimirLaberinto(misArgs.laberinto, filasLab, columnasLab);
