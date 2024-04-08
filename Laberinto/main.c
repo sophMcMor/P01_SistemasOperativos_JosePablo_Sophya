@@ -145,7 +145,8 @@ void *rutinaHilo(void *arg) {
     Args * args = (Args *)arg;
     
     // Prueba
-    printf("Entra:\n");
+    // printf("Entra:\n");
+    printf("Crea un nuevo hilo:\n");
     imprimirLaberinto(args->laberinto, args->filasLab, args->columnasLab);
     
     // Genera los atributos del hilo creado
@@ -176,7 +177,7 @@ void *rutinaHilo(void *arg) {
 }
 
 int main() {
-    const char *nombreArchivo = "../Ejemplos laberintos/lab1.txt";
+    const char *nombreArchivo = "../Ejemplos laberintos/lab2.txt";
     FILE *archivo;
     char linea[100];
     int fila = 0;
