@@ -86,7 +86,7 @@ int recorrerCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo)
         return 1;
 
     default:
-        printf("Valor no valido");
+        printf("Valor no valido \n");
         break;
     }
     // SI llega aqui, el hilo puede seguir avanzando
