@@ -119,7 +119,7 @@ void analizarCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo
     // Analiza abajo de la celda
     if (hilo->direccion != 'a' && fila + 1 < filasLab && laberinto[fila + 1][col].caracter == '1'){
         //pthread_t nuevoHiloAba;
-        Args misArgs = {laberinto, &hilos[contHilos], 'a', (fila + 1), col, celdas, 10, 10};
+        Args misArgs = {laberinto, &hilos[contHilos], 'a', (fila + 1), col, celdas, filasLab, columnasLab};
         pthread_create(&hilos[contHilos], NULL, rutinaHilo, (void *) &misArgs);
         //pthread_detach(nuevoHiloAba);
         //pthread_join(nuevoHiloAba, NULL);
@@ -129,7 +129,7 @@ void analizarCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo
     // Analiza arriba de la celda
     if (hilo->direccion != 'A' && fila - 1 >= 0 && laberinto[fila - 1][col].caracter == '1'){
         //pthread_t nuevoHiloArr;
-        Args misArgs = {laberinto, &hilos[contHilos], 'A', (fila - 1), col, celdas, 10, 10};
+        Args misArgs = {laberinto, &hilos[contHilos], 'A', (fila - 1), col, celdas, filasLab, columnasLab};
         pthread_create(&hilos[contHilos], NULL, rutinaHilo, (void *) &misArgs);
         //pthread_detach(nuevoHiloArr);
         //pthread_join(nuevoHiloArr, NULL);
@@ -140,7 +140,7 @@ void analizarCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo
     // Analiza a la izquierda de la celda
     if (hilo->direccion != 'i' && col - 1 >= 0 && laberinto[fila][col - 1].caracter == '1'){
         //pthread_t nuevoHiloIzq;
-        Args misArgs = {laberinto, &hilos[contHilos], 'i', fila, (col - 1), celdas, 10, 10};
+        Args misArgs = {laberinto, &hilos[contHilos], 'i', fila, (col - 1), celdas, filasLab, columnasLab};
         pthread_create(&hilos[contHilos], NULL, rutinaHilo, (void *) &misArgs);
         //pthread_detach(nuevoHiloIzq);
         //pthread_join(nuevoHiloIzq, NULL);
@@ -150,7 +150,7 @@ void analizarCelda(Celda laberinto[MAX_FILAS][MAX_COLUMNAS], AtributosHilo *hilo
     // Analiza a la derecha de la celda
     if (hilo->direccion != 'd' && col + 1 < columnasLab && laberinto[fila][col + 1].caracter == '1'){
         //pthread_t nuevoHiloDer;
-        Args misArgs = {laberinto, &hilos[contHilos], 'd', fila, (col + 1), celdas, 10, 10};
+        Args misArgs = {laberinto, &hilos[contHilos], 'd', fila, (col + 1), celdas, filasLab, columnasLab};
         pthread_create(&hilos[contHilos], NULL, rutinaHilo, (void *) &misArgs);
         //pthread_detach(nuevoHiloDer);
         //pthread_join(nuevoHiloDer, NULL);
